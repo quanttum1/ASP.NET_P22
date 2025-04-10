@@ -1,6 +1,12 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.EntityFrameworkCore;
+using WebSmonder.Data;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<AppSmonderDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("MyConnection"))); 
+
 //у нас будуть View - це такі сторіки - де можна писати на C# Index.cshtml
 //Велика перевага цих сторінок у тому, що вони перевіряються на c# і компілюються у збірку
 //WebSmoder.dll - вихідний файл проекту.
