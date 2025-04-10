@@ -5,7 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<AppSmonderDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("MyConnection"))); 
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("MyConnection")));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //у нас будуть View - це такі сторіки - де можна писати на C# Index.cshtml
 //Велика перевага цих сторінок у тому, що вони перевіряються на c# і компілюються у збірку
@@ -37,6 +39,7 @@ app.MapControllerRoute(
     pattern: "{controller=Categories}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+await app.SeedData();
 
 app.Run(); //Запускає наш хост (Сервер) і ми бачимо консоль
 
