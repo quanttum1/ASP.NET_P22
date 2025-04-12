@@ -9,5 +9,6 @@ public class CategoryMapper : Profile
     {
         CreateMap<CategoryEntity, CategoryItemViewModel>()
             .ForMember(x => x.Image, opt => opt.MapFrom(x => x.ImageUrl));
+        CreateMap<CategoryCreateViewModel, CategoryEntity>();
     }
 }
