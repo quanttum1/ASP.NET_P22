@@ -1,13 +1,20 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Webp;
+using SixLabors.ImageSharp.Processing;
 using WebSmonder.Data;
 using WebSmonder.Data.Entities;
+using WebSmonder.Interfaces;
 using WebSmonder.Models.Category;
 
 namespace WebSmonder.Controllers;
 
-public class CategoriesController(AppSmonderDbContext context, IMapper mapper) : Controller
+public class CategoriesController(AppSmonderDbContext context, 
+    IMapper mapper, IImageService imageService) : Controller
 {
 
     public IActionResult Index() //Це будь-який web результат - View - сторінка, Файл, PDF, Excel
@@ -25,15 +32,19 @@ public class CategoriesController(AppSmonderDbContext context, IMapper mapper) :
     [HttpPost] //Тепер він працює методом GET - це щоб побачити форму
     public async Task<IActionResult> Create(CategoryCreateViewModel model)
     {
-        var item = await context.Categories.SingleOrDefaultAsync(x => x.Name == model.Name);
-        if (item != null) 
+        var entity = await context.Categories.SingleOrDefaultAsync(x => x.Name == model.Name);
+        if (entity != null) 
         {
             ModelState.AddModelError("Name", "Така категорія уже є!!!");
             return View(model);
         }
-        item = mapper.Map<CategoryEntity>(model);
-        await context.Categories.AddAsync(item);
+
+        entity = mapper.Map<CategoryEntity>(model);
+        entity.ImageUrl = await imageService.SaveImageAsync(model.ImageFile);
+        await context.Categories.AddAsync(entity);
         await context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
+
+    
 }

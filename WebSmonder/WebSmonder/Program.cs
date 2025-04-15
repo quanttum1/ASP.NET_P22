@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.FileProviders.Physical;
 using WebSmonder.Data;
+using WebSmonder.Interfaces;
+using WebSmonder.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +12,8 @@ builder.Services.AddDbContext<AppSmonderDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("MyConnection")));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IImageService, ImageService>();
 
 //у нас будуть View - це такі сторіки - де можна писати на C# Index.cshtml
 //Велика перевага цих сторінок у тому, що вони перевіряються на c# і компілюються у збірку
@@ -38,6 +44,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Categories}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+var dir = builder.Configuration["ImagesDir"];
+string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+Directory.CreateDirectory(path);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(path),
+    RequestPath = $"/{dir}"
+});
 
 await app.SeedData();
 
