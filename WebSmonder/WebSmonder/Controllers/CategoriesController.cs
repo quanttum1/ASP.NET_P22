@@ -46,5 +46,25 @@ public class CategoriesController(AppSmonderDbContext context,
         return RedirectToAction(nameof(Index));
     }
 
-    
+    [HttpPost]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var category = await context.Categories.SingleOrDefaultAsync(x=>x.Id==id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        if (!string.IsNullOrEmpty(category.ImageUrl))
+        {
+            await imageService.DeleteImageAsync(category.ImageUrl);
+        }
+
+        context.Categories.Remove(category);
+        await context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
+
+
 }
