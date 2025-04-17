@@ -19,6 +19,7 @@ public class CategoriesController(AppSmonderDbContext context,
 
     public IActionResult Index() //Це будь-який web результат - View - сторінка, Файл, PDF, Excel
     {
+        ViewBag.Title = "Категорії";
         var model = mapper.ProjectTo<CategoryItemViewModel>(context.Categories).ToList();
         return View(model);
     }
@@ -66,5 +67,54 @@ public class CategoriesController(AppSmonderDbContext context,
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet] //Тепер він працює методом GET - це щоб побачити форму
+    public async Task<IActionResult> Edit(int id)
+    {
+        var category = await context.Categories.FindAsync(id);
+        if (category == null)
+        {
+            return NotFound();
+        }
+        //Динамічна колекція, яка збергає динамічні дані, які можна вкиористати на View
+        ViewBag.ImageName = category.ImageUrl;
 
+        //TempData["ImageUrl"] = category.ImageUrl;
+
+        var model = mapper.Map<CategoryEditViewModel>(category);
+        return View(model);
+    }
+
+    [HttpPost] //Тепер він працює методом GET - це щоб побачити форму
+    public async Task<IActionResult> Edit(CategoryEditViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var existing = await context.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (existing == null)
+        {
+            return NotFound();
+        }
+
+        var duplicate = await context.Categories
+            .FirstOrDefaultAsync(x => x.Name == model.Name && x.Id != model.Id);
+        if (duplicate != null)
+        {
+            ModelState.AddModelError("Name", "Another category with this name already exists");
+            return View(model);
+        }
+
+        existing = mapper.Map(model, existing);
+
+        if (model.ImageFile != null)
+        {
+            await imageService.DeleteImageAsync(existing.ImageUrl);
+            existing.ImageUrl = await imageService.SaveImageAsync(model.ImageFile);
+        }
+        await context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
 }
