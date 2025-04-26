@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Physical;
 using WebSmonder.Data;
+using WebSmonder.Data.Entities.Idenity;
 using WebSmonder.Interfaces;
 using WebSmonder.Services;
 
@@ -10,6 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<AppSmonderDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("MyConnection")));
+
+//Додаємо налаштування для UserManager і RoleManager і SigninManager - займається cookies
+builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+})
+    .AddEntityFrameworkStores<AppSmonderDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
