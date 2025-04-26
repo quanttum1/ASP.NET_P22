@@ -1,11 +1,13 @@
 ﻿using System.Security.Cryptography;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
+using WebSmonder.Constants;
 using WebSmonder.Data;
 using WebSmonder.Data.Entities;
 using WebSmonder.Interfaces;
@@ -48,6 +50,7 @@ public class CategoriesController(AppSmonderDbContext context,
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{Roles.Admin}")]
     public async Task<IActionResult> Delete(int id)
     {
         var category = await context.Categories.SingleOrDefaultAsync(x=>x.Id==id);
