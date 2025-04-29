@@ -35,9 +35,9 @@
                     @if(User.Identity.IsAuthenticated)
                     {
                         <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-action="Profile" asp-controller="Account">@User.Identity.Name</a>
-                            </li>
+                            
+                            @await Component.InvokeAsync("UserLink")
+
                             <li class="nav-item">
                                 @using(Html.BeginForm("Logout", "Account", FormMethod.Post))
                                 {
