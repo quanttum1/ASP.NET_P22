@@ -5,6 +5,8 @@
     <title>Пасхальні св'ята @ViewData["Title"]</title>
     <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="/css/cropper.min.css" rel="stylesheet"/>
+    
     <style>
         body {
         padding-top: 3rem;
@@ -54,7 +56,7 @@
                                 <a class="nav-link" asp-action="Login" asp-controller="Account">Вхід</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Реєстрація</a>
+                                    <a class="nav-link" asp-action="Register" asp-controller="Account">Реєстрація</a>
                             </li>
                         </ul>
                     }
