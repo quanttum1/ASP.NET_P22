@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\" />
     <Folder Include="wwwroot\StandartImages\" />
     <Folder Include="wwwroot\pictures\" />
   </ItemGroup>
