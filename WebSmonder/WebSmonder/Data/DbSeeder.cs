@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebSmonder.Constants;
 using WebSmonder.Data.Entities;
 using WebSmonder.Data.Entities.Idenity;
+using WebSmonder.Interfaces;
 using WebSmonder.Models.Seeder;
 
 namespace WebSmonder.Data
@@ -25,6 +26,7 @@ namespace WebSmonder.Data
 
             if (!context.Categories.Any()) 
             {
+                var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Helpers", "JsonData", "Categories.json");
                 if (File.Exists(jsonFile))
                 {
@@ -33,6 +35,12 @@ namespace WebSmonder.Data
                     {
                         var categories = JsonSerializer.Deserialize<List<SeederCategoryModel>>(jsonData);
                         var categoryEntities = mapper.Map<List<CategoryEntity>>(categories);
+                        foreach (var categoryEntity in categoryEntities)
+                        {
+                            categoryEntity.ImageUrl = 
+                                await imageService.SaveImageFromUrlAsync(categoryEntity.ImageUrl);
+                        }
+
                         await context.AddRangeAsync(categoryEntities);
                         await context.SaveChangesAsync();
 
@@ -47,6 +55,66 @@ namespace WebSmonder.Data
                     Console.WriteLine("Not Found File Categories.json");
                 }
             }
+
+            if (!context.Products.Any())
+            {
+                var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
+                var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Helpers", "JsonData", "Products.json");
+
+                if (File.Exists(jsonFile))
+                {
+                    var jsonData = await File.ReadAllTextAsync(jsonFile);
+                    try
+                    {
+                        var products = JsonSerializer.Deserialize<List<SeederProductModel>>(jsonData);
+
+                        foreach (var product in products)
+                        {
+                            // Знайти відповідну категорію
+                            var category = await context.Categories
+                                .FirstOrDefaultAsync(c => c.Name == product.CategoryName);
+
+                            if (category == null)
+                            {
+                                Console.WriteLine($"Category '{product.CategoryName}' not found for product '{product.Name}'");
+                                continue;
+                            }
+
+                            var productEntity = new ProductEntity
+                            {
+                                Name = product.Name,
+                                Description = product.Description,
+                                CategoryId = category.Id,
+                                ProductImages = new List<ProductImageEntity>()
+                            };
+
+                            int priority = 0;
+                            foreach (var imageUrl in product.Images)
+                            {
+                                var savedImageUrl = await imageService.SaveImageFromUrlAsync(imageUrl);
+                                productEntity.ProductImages.Add(new ProductImageEntity
+                                {
+                                    Name = savedImageUrl,
+                                    Priotity = priority++
+                                });
+                            }
+
+                            await context.Products.AddAsync(productEntity);
+                        }
+
+                        await context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error Json Parse Product Data: {0}", ex.Message);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Products.json file not found");
+                }
+            }
+
 
             if (!context.Roles.Any())
             {
