@@ -280,8 +280,8 @@ namespace WebSmonder.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("character varying(4000)");
+                        .HasMaxLength(40000)
+                        .HasColumnType("character varying(40000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
