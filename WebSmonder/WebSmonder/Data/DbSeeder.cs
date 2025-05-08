@@ -7,6 +7,7 @@ using WebSmonder.Data.Entities;
 using WebSmonder.Data.Entities.Idenity;
 using WebSmonder.Interfaces;
 using WebSmonder.Models.Seeder;
+using WebSmonder.SMTP;
 
 namespace WebSmonder.Data
 {
@@ -21,6 +22,7 @@ namespace WebSmonder.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
 
             var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+            var smtpService = scope.ServiceProvider.GetRequiredService<ISMTPService>();
 
             context.Database.Migrate();
 
@@ -115,7 +117,6 @@ namespace WebSmonder.Data
                 }
             }
 
-
             if (!context.Roles.Any())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
@@ -178,6 +179,22 @@ namespace WebSmonder.Data
                 }
             }
 
+            webApplication.Use(async (context, next) =>
+            {
+                var host = context.Request.Host.Host;
+
+                Message msgEmail = new Message
+                {
+                    Body = $"Додаток успішно запущено {DateTime.Now}",
+                    Subject = $"Запуск сайту {host}",
+                    To="novakvova@gmail.com"
+                };
+
+                await smtpService.SendMessage(msgEmail);
+                Console.WriteLine($"---------{host}----------");
+
+                await next.Invoke();
+            });
         }
 
     }
