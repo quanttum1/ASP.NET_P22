@@ -79,5 +79,11 @@ namespace WebSmonder.Controllers
             return View(model);
         }
 
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
     }
 }
