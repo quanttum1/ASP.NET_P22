@@ -179,22 +179,22 @@ namespace WebSmonder.Data
                 }
             }
 
-            webApplication.Use(async (context, next) =>
-            {
-                var host = context.Request.Host.Host;
+            //webApplication.Use(async (context, next) =>
+            //{
+            //    var host = context.Request.Host.Host;
 
-                Message msgEmail = new Message
-                {
-                    Body = $"Додаток успішно запущено {DateTime.Now}",
-                    Subject = $"Запуск сайту {host}",
-                    To="novakvova@gmail.com"
-                };
+            //    Message msgEmail = new Message
+            //    {
+            //        Body = $"Додаток успішно запущено {DateTime.Now}",
+            //        Subject = $"Запуск сайту {host}",
+            //        To="novakvova@gmail.com"
+            //    };
 
-                await smtpService.SendMessage(msgEmail);
-                Console.WriteLine($"---------{host}----------");
+            //    await smtpService.SendMessage(msgEmail);
+            //    Console.WriteLine($"---------{host}----------");
 
-                await next.Invoke();
-            });
+            //    await next.Invoke();
+            //});
         }
 
     }
