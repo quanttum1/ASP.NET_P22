@@ -18,7 +18,7 @@ namespace WebSmonder.Data
             using var scope = webApplication.Services.CreateScope();
             //Цей об'єкт буде верта посилання на конткетс, який зараєстрвоано в Progran.cs
             var context = scope.ServiceProvider.GetRequiredService<AppSmonderDbContext>();
-            
+
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
 
             var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
@@ -26,7 +26,7 @@ namespace WebSmonder.Data
 
             context.Database.Migrate();
 
-            if (!context.Categories.Any()) 
+            if (!context.Categories.Any())
             {
                 var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
                 var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Helpers", "JsonData", "Categories.json");
@@ -39,7 +39,7 @@ namespace WebSmonder.Data
                         var categoryEntities = mapper.Map<List<CategoryEntity>>(categories);
                         foreach (var categoryEntity in categoryEntities)
                         {
-                            categoryEntity.ImageUrl = 
+                            categoryEntity.ImageUrl =
                                 await imageService.SaveImageFromUrlAsync(categoryEntity.ImageUrl);
                         }
 
@@ -52,7 +52,7 @@ namespace WebSmonder.Data
                         Console.WriteLine("Error Json Parse Data {0}", ex.Message);
                     }
                 }
-                else 
+                else
                 {
                     Console.WriteLine("Not Found File Categories.json");
                 }
@@ -91,14 +91,23 @@ namespace WebSmonder.Data
                             };
 
                             int priority = 0;
-                            foreach (var imageUrl in product.Images)
+                            try
                             {
-                                var savedImageUrl = await imageService.SaveImageFromUrlAsync(imageUrl);
-                                productEntity.ProductImages.Add(new ProductImageEntity
+                                foreach (var imageUrl in product.Images)
                                 {
-                                    Name = savedImageUrl,
-                                    Priotity = priority++
-                                });
+
+                                    var savedImageUrl = await imageService.SaveImageFromUrlAsync(imageUrl);
+                                    productEntity.ProductImages.Add(new ProductImageEntity
+                                    {
+                                        Name = savedImageUrl,
+                                        Priotity = priority++
+                                    });
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("-----Error Add {0}------", ex.Message);
+                                continue;
                             }
 
                             await context.Products.AddAsync(productEntity);
@@ -122,7 +131,7 @@ namespace WebSmonder.Data
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
                 var admin = new RoleEntity { Name = Roles.Admin };
                 var result = await roleManager.CreateAsync(admin);
-                if (result.Succeeded) 
+                if (result.Succeeded)
                 {
                     Console.WriteLine($"Роль {Roles.Admin} створено успішно");
                 }
