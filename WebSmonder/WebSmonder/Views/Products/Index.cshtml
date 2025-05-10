@@ -5,11 +5,16 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Фільми</h2>
 
+
+
+
     @await Html.PartialAsync("_ProductSearchItems", Model.Search)
 
     <a href="@Url.Action("Create")" class="btn btn-success">Додати</a>
 
-
+    <div class="alert alert-primary mt-2" role="alert">
+        Кількість елементів: <strong>@Model.Count</strong>
+    </div>
 
     @await Html.PartialAsync("_ListProductItems", Model.Products)
 </div>

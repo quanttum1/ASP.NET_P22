@@ -10,10 +10,10 @@ namespace WebSmonder.Controllers;
 public class ProductsController(AppSmonderDbContext context, 
     IMapper mapper) : Controller
 {
-    public async Task<IActionResult> Index() //Це будь-який web результат - View - сторінка, Файл, PDF, Excel
+    [HttpGet]
+    public async Task<IActionResult> Index(ProductSearchViewModel searchModel) //Це будь-який web результат - View - сторінка, Файл, PDF, Excel
     {
         ViewBag.Title = "Продукти";
-        var searchModel = new ProductSearchViewModel();
 
         searchModel.Categories = await mapper.ProjectTo<SelectItemViewModel>(context.Categories)
             .ToListAsync();
@@ -24,8 +24,14 @@ public class ProductsController(AppSmonderDbContext context,
             Name = "Оберіть категорію"
         });
 
+        var query = context.Products.AsQueryable();
+
         var model = new ProductListViewModel();
-        model.Products = mapper.ProjectTo<ProductItemViewModel>(context.Products).ToList();
+
+        model.Count = query.Count();
+
+        //Відбір тих елементів, які відображаються на сторінці
+        model.Products = mapper.ProjectTo<ProductItemViewModel>(query).ToList();
         model.Search = searchModel;
 
         return View(model);
