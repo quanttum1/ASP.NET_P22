@@ -5,9 +5,6 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Фільми</h2>
 
-
-
-
     @await Html.PartialAsync("_ProductSearchItems", Model.Search)
 
     <a href="@Url.Action("Create")" class="btn btn-success">Додати</a>
@@ -16,6 +13,17 @@
         Кількість елементів: <strong>@Model.Count</strong>
     </div>
 
-    @await Html.PartialAsync("_ListProductItems", Model.Products)
+    @if(Model.Count == 0)
+    {
+        <div class="border rounded p-3 text-muted text-center bg-light">
+            <i class="bi bi-search me-2"></i>
+            Фільми за вашим запитом не знайдено.
+        </div>
+    }
+    else
+    {
+        @await Html.PartialAsync("_ListProductItems", Model.Products)
+    }
+
 </div>
 

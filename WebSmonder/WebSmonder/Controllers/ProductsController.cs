@@ -26,6 +26,21 @@ public class ProductsController(AppSmonderDbContext context,
 
         var query = context.Products.AsQueryable();
 
+        if(!string.IsNullOrEmpty(searchModel.Name))
+        {
+            string textSearch = searchModel.Name.Trim();
+            query = query.Where(p => p.Name.ToLower().Contains(textSearch.ToLower()));
+        }
+
+        if (searchModel.CategoryId != 0)
+            query = query.Where(p => p.CategoryId==searchModel.CategoryId);
+
+        if (!string.IsNullOrEmpty(searchModel.Description))
+        {
+            string textSearch = searchModel.Description.Trim();
+            query = query.Where(p => p.Description.ToLower().Contains(textSearch.ToLower()));
+        }
+
         var model = new ProductListViewModel();
 
         model.Count = query.Count();
