@@ -11,6 +11,8 @@ public class CategoryMapper : Profile
     {
         CreateMap<SeederCategoryModel, CategoryEntity>();
         CreateMap<CategoryEntity, CategoryItemModel>();
-            //.ForMember(x => x.Image, opt => opt.Ignore());
+        //.ForMember(x => x.Image, opt => opt.Ignore());
+        CreateMap<CategoryCreateModel, CategoryEntity>()
+            .ForMember(x => x.Image, opt => opt.Ignore());
     }
 }
