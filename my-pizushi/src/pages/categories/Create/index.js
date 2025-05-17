@@ -2,6 +2,8 @@ import {useState} from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import {BASE_URL} from "../../../api/apiConfig";
 import {useNavigate} from "react-router-dom";
+import BaseTextInput from "../../../components/common/BaseTextInput";
+import BaseFileInput from "../../../components/common/BaseFileInput";
 
 
 const CategoriesCreatePage = () => {
@@ -59,35 +61,26 @@ const CategoriesCreatePage = () => {
         <>
             <h1 className={"text-center"}>Додати категорію</h1>
             <form onSubmit={handleSubmit} className={"col-md-6 offset-md-3"}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Назва</label>
-                    <input type="text"
-                           className="form-control"
-                           name={"name"}
-                           id="name"
-                           value={form.name}
-                           onChange={onHandleChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="slug" className="form-label">Url-Slug</label>
-                    <input type="text"
-                           className="form-control"
-                           id="slug"
-                           name={"slug"}
-                           value={form.slug}
-                           onChange={onHandleChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="imageFile" className="form-label">Оберіть фото</label>
-                    <input type="file"
-                           className="form-control"
-                           id="imageFile"
-                           name={"imageFile"}
-                           onChange={onHandleFileChange}
-                    />
-                </div>
+                <BaseTextInput
+                    label={"Назва"}
+                    field={"name"}
+                    value={form.name}
+                    onChange={onHandleChange}
+                />
+
+                <BaseTextInput
+                    label={"Url-Slug"}
+                    field={"slug"}
+                    value={form.slug}
+                    onChange={onHandleChange}
+                />
+
+                <BaseFileInput
+                    label={"Оберіть фото"}
+                    field={"imageFile"}
+                    onChange={onHandleFileChange}
+                />
+
                 <button type="submit" className="btn btn-primary">Додати</button>
             </form>
         </>
