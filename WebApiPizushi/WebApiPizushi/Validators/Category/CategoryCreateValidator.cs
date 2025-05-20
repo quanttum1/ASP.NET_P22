@@ -18,7 +18,7 @@ public class CategoryCreateValidator : AbstractValidator<CategoryCreateModel>
             .MaximumLength(250)
             .WithMessage("Слаг повинен містити не більше 250 символів");
         RuleFor(x => x.ImageFile)
-            .NotNull().WithMessage("Файл зображення є обов'язковим")
+            //.NotNull().WithMessage("Файл зображення є обов'язковим")
             .NotEmpty().WithMessage("Файл зображення є обов'язковим");
             //.Must(file => file!.Length > 0)
             //.WithMessage("Файл не повинен бути порожнім");

@@ -26,8 +26,16 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
+    public async Task<IActionResult> Create(
+        //[FromServices] IValidator<CategoryCreateModel> validator,
+        [FromForm] CategoryCreateModel model)
     {
+        //var result = await validator.ValidateAsync(model);
+
+        //if (!result.IsValid)
+        //{
+        //    return BadRequest(result.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
+        //}
         var repeated = await pizushiContext.Categories.Where(x => x.Name == model.Name).SingleOrDefaultAsync();
         if (repeated != null)
         {

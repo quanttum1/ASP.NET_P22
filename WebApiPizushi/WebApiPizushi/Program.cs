@@ -1,8 +1,10 @@
 using System;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using WebApiPizushi.Data;
+using WebApiPizushi.Filters;
 using WebApiPizushi.Interfaces;
 using WebApiPizushi.Models.Category;
 using WebApiPizushi.Services;
@@ -21,11 +23,27 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+// Вимикаємо автоматичну валідацію через ModelState
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+// Додаємо валідацію через FluentValidation
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+//builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateValidator>();
+
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
 
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
+
 
 var app = builder.Build();
 
