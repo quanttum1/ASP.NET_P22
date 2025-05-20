@@ -1,8 +1,12 @@
+using System;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using WebApiPizushi.Data;
 using WebApiPizushi.Interfaces;
+using WebApiPizushi.Models.Category;
 using WebApiPizushi.Services;
+using WebApiPizushi.Validators.Category;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,8 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSwaggerGen();
 

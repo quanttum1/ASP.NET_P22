@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiPizushi.Data;
@@ -25,15 +28,12 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
         var repeated = await pizushiContext.Categories.Where(x => x.Name == model.Name).SingleOrDefaultAsync();
         if (repeated != null)
         {
             return BadRequest($"{model.Name} already exists");
         }
+
         var entity = mapper.Map<CategoryEntity>(model);
         entity.Image = await imageService.SaveImageAsync(model.ImageFile!);
         await pizushiContext.Categories.AddAsync(entity);

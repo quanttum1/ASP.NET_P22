@@ -5,44 +5,27 @@ import {useNavigate} from "react-router-dom";
 import BaseTextInput from "../../../components/common/BaseTextInput";
 import BaseFileInput from "../../../components/common/BaseFileInput";
 
+import * as Yup from "yup";
+import {useFormik} from "formik";
+
+const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    slug: Yup.string().required("Slug is required"),
+    imageFile: Yup.mixed().nullable()
+});
 
 const CategoriesCreatePage = () => {
 
-    const [form, setForm] = useState({
+    const initValues = {
         name: "",
         slug: "",
         imageFile: null,
-    });
+    };
 
-    const navigate = useNavigate();
-
-    // const [errors, setErrors] = useState({})
-
-    const onHandleChange = (e) => {
-        setForm({...form, [e.target.name]: e.target.value});
-    }
-
-    const onHandleFileChange = (e) => {
-        const files = e.target.files;
-        if (files.length > 0) {
-            setForm({...form, [e.target.name]: files[0]});
-        }
-        else {
-            setForm({...form, [e.target.name]: null});
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // if(form.name === "") {
-        //     setErrors({...errors, name: "Вкажіть назву"});
-        // }
-        // if(form.slug === "") {
-        //     setErrors({...errors, slug: "Вкажіть назву"});
-        // }
+    const handleFormikSubmit = async (values) => {
+        console.log("Submit formik", values);
         try {
-            var result = await axiosInstance.post(`${BASE_URL}/api/categories`, form,
+            var result = await axiosInstance.post(`${BASE_URL}/api/categories`, values,
                 {
                     headers: {
                         "Content-Type": "multipart/form-data"
@@ -52,9 +35,29 @@ const CategoriesCreatePage = () => {
             navigate("..");
 
         } catch(error) {
+            //Що з цим робити і як робити на сервері
             console.error("Send request error", error);
         }
-        // console.log("Submit data", form);
+    }
+
+    const formik = useFormik({
+        initialValues: initValues,
+        onSubmit: handleFormikSubmit,
+        validationSchema: validationSchema,
+    });
+
+    const {values, handleSubmit, errors, touched, handleChange, setFieldValue} = formik;
+
+    const navigate = useNavigate();
+
+    const onHandleFileChange = (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            setFieldValue("imageFile", files[0]);
+        }
+        else {
+            setFieldValue("imageFile", null);
+        }
     }
 
     return (
@@ -64,15 +67,19 @@ const CategoriesCreatePage = () => {
                 <BaseTextInput
                     label={"Назва"}
                     field={"name"}
-                    value={form.name}
-                    onChange={onHandleChange}
+                    error={errors.name}
+                    touched={touched.name}
+                    value={values.name}
+                    onChange={handleChange}
                 />
 
                 <BaseTextInput
                     label={"Url-Slug"}
                     field={"slug"}
-                    value={form.slug}
-                    onChange={onHandleChange}
+                    error={errors.slug}
+                    touched={touched.slug}
+                    value={values.slug}
+                    onChange={handleChange}
                 />
 
                 <BaseFileInput
