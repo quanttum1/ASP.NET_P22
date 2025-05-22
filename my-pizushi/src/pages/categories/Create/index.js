@@ -106,6 +106,8 @@ const CategoriesCreatePage = () => {
                 <BaseFileInput
                     label={"Оберіть фото"}
                     field={"imageFile"}
+                    error={errors.imageFile}
+                    touched={touched.imageFile}
                     onChange={onHandleFileChange}
                 />
 
