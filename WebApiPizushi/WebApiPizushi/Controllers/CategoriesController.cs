@@ -25,6 +25,21 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
         return Ok(model);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetItemById(int id)
+    {
+        var model = await mapper
+            .ProjectTo<CategoryItemModel>(pizushiContext.Categories.Where(x => x.Id == id))
+            .SingleOrDefaultAsync();
+        if (model == null)
+        {
+            return NotFound();
+        }
+        return Ok(model);
+    }
+
+
+
     [HttpPost]
     public async Task<IActionResult> Create(
         //[FromServices] IValidator<CategoryCreateModel> validator,
@@ -36,16 +51,32 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
         //{
         //    return BadRequest(result.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
         //}
-        var repeated = await pizushiContext.Categories.Where(x => x.Name == model.Name).SingleOrDefaultAsync();
-        if (repeated != null)
-        {
-            return BadRequest($"{model.Name} already exists");
-        }
 
         var entity = mapper.Map<CategoryEntity>(model);
         entity.Image = await imageService.SaveImageAsync(model.ImageFile!);
         await pizushiContext.Categories.AddAsync(entity);
         await pizushiContext.SaveChangesAsync();
         return Ok(entity);
+    }
+
+    [HttpPut] //Якщо є метод Put - це значить змінна даних
+    public async Task<IActionResult> Edit([FromForm] CategoryEditModel model)
+    {
+        var existing = await pizushiContext.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
+        if (existing == null)
+        {
+            return NotFound();
+        }
+
+        existing = mapper.Map(model, existing);
+
+        if (model.ImageFile != null)
+        {
+            await imageService.DeleteImageAsync(existing.Image);
+            existing.Image = await imageService.SaveImageAsync(model.ImageFile);
+        }
+        await pizushiContext.SaveChangesAsync();
+
+        return Ok();
     }
 }
