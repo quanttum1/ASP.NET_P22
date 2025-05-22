@@ -9,8 +9,8 @@ import * as Yup from "yup";
 import {useFormik} from "formik";
 
 const validationSchema = Yup.object().shape({
-    //name: Yup.string().required("Name is required"),
-    //slug: Yup.string().required("Slug is required"),
+    name: Yup.string().required("Вкажіть назву"),
+    slug: Yup.string().required("Вкажіть слаг"),
     imageFile: Yup.mixed().nullable()
 });
 
