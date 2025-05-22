@@ -31,6 +31,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 // Додаємо валідацію через FluentValidation
+//Шукаємо усі можливі валідатори
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 //builder.Services.AddValidatorsFromAssemblyContaining<CategoryCreateValidator>();
