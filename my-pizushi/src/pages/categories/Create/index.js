@@ -9,8 +9,8 @@ import * as Yup from "yup";
 import {useFormik} from "formik";
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    slug: Yup.string().required("Slug is required"),
+    //name: Yup.string().required("Name is required"),
+    //slug: Yup.string().required("Slug is required"),
     imageFile: Yup.mixed().nullable()
 });
 
@@ -34,9 +34,30 @@ const CategoriesCreatePage = () => {
             console.log("Server result", result);
             navigate("..");
 
-        } catch(error) {
+        } catch(err) {
             //Що з цим робити і як робити на сервері
-            console.error("Send request error", error);
+            console.error("Send request error", err);
+
+            const serverErrors = {};
+            const {response} = err;
+            const {data} = response;
+            if(data) {
+                const {errors} = data;
+                Object.entries(errors).forEach(([key, messages]) => {
+                    let messageLines = "";
+                    messages.forEach(message => {
+                        messageLines += message+" ";
+                        console.log(`${key}: ${message}`);
+                    });
+                    const field = key.charAt(0).toLowerCase() + key.slice(1);
+                    serverErrors[field] = messageLines;
+
+                });
+            }
+            console.log("response", response);
+            console.log("serverErrors", serverErrors);
+            setErrors(serverErrors);
+
         }
     }
 
@@ -46,7 +67,7 @@ const CategoriesCreatePage = () => {
         validationSchema: validationSchema,
     });
 
-    const {values, handleSubmit, errors, touched, handleChange, setFieldValue} = formik;
+    const {values, handleSubmit, errors, touched, setErrors, handleChange, setFieldValue} = formik;
 
     const navigate = useNavigate();
 
