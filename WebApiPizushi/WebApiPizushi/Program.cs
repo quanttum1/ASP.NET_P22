@@ -1,9 +1,11 @@
 using System;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using WebApiPizushi.Data;
+using WebApiPizushi.Data.Entities.Identity;
 using WebApiPizushi.Filters;
 using WebApiPizushi.Interfaces;
 using WebApiPizushi.Models.Category;
@@ -16,6 +18,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbPizushiContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<AppDbPizushiContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IImageService, ImageService>();
 

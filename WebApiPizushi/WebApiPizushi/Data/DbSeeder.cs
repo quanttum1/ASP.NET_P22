@@ -1,7 +1,10 @@
 ﻿using System.Text.Json;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebApiPizushi.Constants;
 using WebApiPizushi.Data.Entities;
+using WebApiPizushi.Data.Entities.Identity;
 using WebApiPizushi.Interfaces;
 using WebApiPizushi.Models.Seeder;
 
@@ -14,6 +17,8 @@ public static class DbSeeder
         using var scope = webApplication.Services.CreateScope();
         //Цей об'єкт буде верта посилання на конткетс, який зараєстрвоано в Progran.cs
         var context = scope.ServiceProvider.GetRequiredService<AppDbPizushiContext>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
         var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
         context.Database.Migrate();
@@ -49,5 +54,18 @@ public static class DbSeeder
                 Console.WriteLine("Not Found File Categories.json");
             }
         }
+    
+        if(!context.Roles.Any())
+        {
+            foreach (var roleName in Roles.AllRoles)
+            {
+                var result = await roleManager.CreateAsync(new(roleName));
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Error Create Role {0}", roleName);
+                }
+            }
+        }
+
     }
 }
