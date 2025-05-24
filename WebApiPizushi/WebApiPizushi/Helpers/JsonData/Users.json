@@ -1,6 +1,5 @@
 [
     {
-        "UserName": "admin@example.com",
         "Email": "admin@example.com",
         "FirstName": "Адмiн",
         "LastName": "Системний",
@@ -9,7 +8,6 @@
         "Roles": [ "Admin" ]
     },
     {
-        "UserName": "ivan@example.com",
         "Email": "ivan@example.com",
         "FirstName": "Іван",
         "LastName": "Борисюк",
@@ -18,7 +16,6 @@
         "Roles": [ "User" ]
     },
     {
-        "UserName": "olena@example.com",
         "Email": "olena@example.com",
         "FirstName": "Олена",
         "LastName": "Шаглінська",
