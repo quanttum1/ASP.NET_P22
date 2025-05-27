@@ -17,6 +17,20 @@ const Header = () => {
                             </NavLink>
                         </li>
                     </ul>
+
+                    <ul className="navbar-nav ms-auto">
+                        <li className="nav-item">
+                            <NavLink to="/register" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Реєстрація
+                            </NavLink>
+                        </li>
+
+                        <li className="nav-item">
+                            <NavLink to="/login" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Вхід
+                            </NavLink>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
