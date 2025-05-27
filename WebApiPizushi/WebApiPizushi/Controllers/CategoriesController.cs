@@ -2,8 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebApiPizushi.Constants;
 using WebApiPizushi.Data;
 using WebApiPizushi.Data.Entities;
 using WebApiPizushi.Interfaces;
@@ -24,7 +26,7 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
 
         return Ok(model);
     }
-
+    [Authorize(Roles = $"{Roles.Admin}")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItemById(int id)
     {
