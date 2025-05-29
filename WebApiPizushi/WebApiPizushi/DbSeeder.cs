@@ -3,12 +3,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApiPizushi.Constants;
+using WebApiPizushi.Data;
 using WebApiPizushi.Data.Entities;
 using WebApiPizushi.Data.Entities.Identity;
 using WebApiPizushi.Interfaces;
 using WebApiPizushi.Models.Seeder;
 
-namespace WebApiPizushi.Data;
+namespace WebApiPizushi;
 
 public static class DbSeeder
 {
