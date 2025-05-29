@@ -15,24 +15,20 @@ namespace WebApiPizushi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController(AppDbPizushiContext pizushiContext,
-    IMapper mapper, IImageService imageService) : ControllerBase
+public class CategoriesController(ICategoryService categoryService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        var model = await mapper.ProjectTo<CategoryItemModel>(pizushiContext.Categories)
-            .ToListAsync();
-
+        var model = await categoryService.List();
         return Ok(model);
     }
+
     [Authorize(Roles = $"{Roles.Admin}")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItemById(int id)
     {
-        var model = await mapper
-            .ProjectTo<CategoryItemModel>(pizushiContext.Categories.Where(x => x.Id == id))
-            .SingleOrDefaultAsync();
+        var model = await categoryService.GetItemById(id);
         if (model == null)
         {
             return NotFound();
@@ -40,45 +36,18 @@ public class CategoriesController(AppDbPizushiContext pizushiContext,
         return Ok(model);
     }
 
-
-
     [HttpPost]
-    public async Task<IActionResult> Create(
-        //[FromServices] IValidator<CategoryCreateModel> validator,
-        [FromForm] CategoryCreateModel model)
+    public async Task<IActionResult> Create([FromForm] CategoryCreateModel model)
     {
-        //var result = await validator.ValidateAsync(model);
-
-        //if (!result.IsValid)
-        //{
-        //    return BadRequest(result.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }));
-        //}
-
-        var entity = mapper.Map<CategoryEntity>(model);
-        entity.Image = await imageService.SaveImageAsync(model.ImageFile!);
-        await pizushiContext.Categories.AddAsync(entity);
-        await pizushiContext.SaveChangesAsync();
-        return Ok(entity);
+        var category = await categoryService.Create(model);
+        return Ok(category);
     }
 
     [HttpPut] //Якщо є метод Put - це значить змінна даних
-    public async Task<IActionResult> Edit([FromForm] CategoryEditModel model)
+    public async Task<IActionResult> Update([FromForm] CategoryEditModel model)
     {
-        var existing = await pizushiContext.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
-        if (existing == null)
-        {
-            return NotFound();
-        }
+        var category = await categoryService.Update(model);
 
-        existing = mapper.Map(model, existing);
-
-        if (model.ImageFile != null)
-        {
-            await imageService.DeleteImageAsync(existing.Image);
-            existing.Image = await imageService.SaveImageAsync(model.ImageFile);
-        }
-        await pizushiContext.SaveChangesAsync();
-
-        return Ok();
+        return Ok(category);
     }
 }

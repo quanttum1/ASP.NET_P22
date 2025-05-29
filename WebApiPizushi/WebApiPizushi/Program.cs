@@ -17,6 +17,7 @@ using Core.Interfaces;
 using Core.Models.Category;
 using Core.Services;
 using Core.Validators.Category;
+using Core.Models.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -83,7 +86,7 @@ builder.Services.AddMvc(options =>
     options.Filters.Add<ValidationFilter>();
 });
 
-var assemblyName = typeof(Program).Assembly.GetName().Name;
+var assemblyName = typeof(LoginModel).Assembly.GetName().Name;
 
 builder.Services.AddSwaggerGen(opt =>
 {
