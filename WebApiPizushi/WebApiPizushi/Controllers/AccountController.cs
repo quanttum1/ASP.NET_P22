@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApiPizushi.Constants;
-using WebApiPizushi.Data.Entities.Identity;
+using Domain.Entities.Identity;
 using WebApiPizushi.Interfaces;
 using WebApiPizushi.Models.Account;
 

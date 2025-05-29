@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using WebApiPizushi.Data.Entities.Identity;
+using Domain.Entities.Identity;
 using WebApiPizushi.Interfaces;
 
 namespace WebApiPizushi.Services;
