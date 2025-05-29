@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace WebApiPizushi.Models.Category;
+namespace Core.Models.Category;
 
 public class CategoryCreateModel
 {

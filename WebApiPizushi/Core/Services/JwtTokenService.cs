@@ -3,9 +3,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Domain.Entities.Identity;
-using WebApiPizushi.Interfaces;
+using Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 
-namespace WebApiPizushi.Services;
+namespace Core.Services;
 
 public class JwtTokenService(IConfiguration configuration,
     UserManager<UserEntity> userManager) : IJwtTokenService

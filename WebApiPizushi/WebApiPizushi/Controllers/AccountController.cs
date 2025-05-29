@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApiPizushi.Constants;
 using Domain.Entities.Identity;
-using WebApiPizushi.Interfaces;
-using WebApiPizushi.Models.Account;
+using Core.Interfaces;
+using Core.Models.Account;
 
 namespace WebApiPizushi.Controllers
 {
