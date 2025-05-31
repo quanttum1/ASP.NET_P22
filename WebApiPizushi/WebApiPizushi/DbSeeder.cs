@@ -163,7 +163,6 @@ public static class DbSeeder
                 {
                     Console.WriteLine("Error Save Image {0} - {1}", imageUrl, ex.Message);
                 }
-
             }
             await context.SaveChangesAsync();
 
