@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using System.Reflection.Emit;
 
 namespace Domain;
 
@@ -14,6 +15,7 @@ public class AppDbPizushiContext : IdentityDbContext<UserEntity, RoleEntity, lon
     public DbSet<IngredientEntity> Ingredients { get; set; }
     public DbSet<ProductSizeEntity> ProductSizes { get; set; }
     public DbSet<ProductEntity> Products { get; set; }
+    public DbSet<ProductIngredientEntity> ProductIngredients { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -31,5 +33,8 @@ public class AppDbPizushiContext : IdentityDbContext<UserEntity, RoleEntity, lon
                 .HasForeignKey(u => u.UserId)
                 .IsRequired();
         });
+
+        builder.Entity<ProductIngredientEntity>()
+            .HasKey(pi => new { pi.ProductId, pi.IngredientId });
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Entities.Identity;
 
 namespace Domain.Entities;
 
@@ -26,4 +27,6 @@ public class ProductEntity : BaseEntity<long>
     public long? ProductSizeId { get; set; }
 
     public ProductSizeEntity? ProductSize { get; set; }
+
+    public ICollection<ProductIngredientEntity>? ProductIngredients { get; set; }
 }
