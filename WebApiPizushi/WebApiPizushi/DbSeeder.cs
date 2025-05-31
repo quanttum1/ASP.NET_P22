@@ -55,8 +55,40 @@ public static class DbSeeder
                 Console.WriteLine("Not Found File Categories.json");
             }
         }
-    
-        if(!context.Roles.Any())
+
+        if (!context.Ingredients.Any())
+        {
+            var imageService = scope.ServiceProvider.GetRequiredService<IImageService>();
+            var jsonFile = Path.Combine(Directory.GetCurrentDirectory(), "Helpers", "JsonData", "Ingredients.json");
+            if (File.Exists(jsonFile))
+            {
+                var jsonData = await File.ReadAllTextAsync(jsonFile);
+                try
+                {
+                    var items = JsonSerializer.Deserialize<List<SeederIngredientModel>>(jsonData);
+                    var entityItems = mapper.Map<List<IngredientEntity>>(items);
+                    foreach (var entity in entityItems)
+                    {
+                        entity.Image =
+                            await imageService.SaveImageFromUrlAsync(entity.Image);
+                    }
+
+                    await context.Ingredients.AddRangeAsync(entityItems);
+                    await context.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error Json Parse Data {0}", ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not Found File Ingredients.json");
+            }
+        }
+
+        if (!context.Roles.Any())
         {
             foreach (var roleName in Roles.AllRoles)
             {
