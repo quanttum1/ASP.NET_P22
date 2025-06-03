@@ -10,6 +10,8 @@ import LoginPage from "./pages/account/Login";
 import {useAuthStore} from "./store/authStore";
 import {jwtDecode} from "jwt-decode";
 import {useEffect} from "react";
+import ProductsPage from "./pages/products";
+import ProductPage from "./pages/products/product";
 
 const App = () => {
 
@@ -33,6 +35,11 @@ const App = () => {
                     <Route path={"categories"}>
                         <Route index element={<CategoriesPage />} />
                         <Route path={"create"} element={<CategoriesCreatePage />} />
+                    </Route>
+
+                    <Route path={"products"}>
+                        <Route index element={<ProductsPage/>} />
+                        <Route path={"product/:id"} element={<ProductPage/>} />
                     </Route>
 
                     <Route path={"login"} element={<LoginPage/>}/>
