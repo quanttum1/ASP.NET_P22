@@ -29,15 +29,13 @@ const ImageUploaderSortable = ({ images, setImages }) => {
 
     const handleFiles = (event) => {
         const files = event.target.files;
-        const newImages = [];
+         const newImages = [];
 
         Array.from(files).forEach((file) => {
             if (!file.type.startsWith('image/')) return;
-
-            const preview = URL.createObjectURL(file);
-            newImages.push({ file, preview });
+            newImages.push( file );
         });
-
+        //
         setImages((prev) => [...prev, ...newImages]);
         fileInputRef.current.value = '';
     };
@@ -65,7 +63,7 @@ const ImageUploaderSortable = ({ images, setImages }) => {
                     <div className="col-3" key={index}>
                         <div className="position-relative">
                             <img
-                                src={img.preview}
+                                src={URL.createObjectURL(img)}
                                 alt="preview"
                                 className="img-fluid rounded border"
                                 style={{ height: '100px', objectFit: 'cover' }}

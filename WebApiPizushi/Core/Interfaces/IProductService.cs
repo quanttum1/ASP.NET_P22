@@ -9,4 +9,7 @@ public interface IProductService
     Task<ProductItemModel> GetById(int id);
     Task<List<ProductItemModel>> GetBySlug(string slug);
     Task<ProductEntity> Create(ProductCreateModel model);
+
+    public Task<IEnumerable<ProductIngredientModel>> GetIngredientsAsync();
+    public Task<IEnumerable<ProductSizeModel>> GetSizesAsync();
 }

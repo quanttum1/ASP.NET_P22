@@ -46,7 +46,7 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
         var entity = mapper.Map<ProductEntity>(model);
         context.Products.Add(entity);
         await context.SaveChangesAsync();
-        foreach (var ingId in model.ProductIngredientsId!)
+        foreach (var ingId in model.IngredientIds!)
         {
             var productIngredient = new ProductIngredientEntity
             {
@@ -77,5 +77,21 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
         }
         await context.SaveChangesAsync();
         return entity;
+    }
+
+    public async Task<IEnumerable<ProductIngredientModel>> GetIngredientsAsync()
+    {
+        var ingredients = await context.Ingredients
+            .ProjectTo<ProductIngredientModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+        return ingredients;
+    }
+
+    public async Task<IEnumerable<ProductSizeModel>> GetSizesAsync()
+    {
+        var sizes = await context.ProductSizes
+            .ProjectTo<ProductSizeModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+        return sizes;
     }
 }

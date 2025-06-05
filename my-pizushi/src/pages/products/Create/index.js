@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
+import {useNavigate} from "react-router-dom";
 
 const CreateProductPage = () => {
     const [productData, setProductData] = useState({
@@ -19,6 +20,8 @@ const CreateProductPage = () => {
     const [categories, setCategories] = useState([]);
     const [ingredients, setIngredients] = useState([]);
 
+    const navigate = useNavigate();
+
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
@@ -26,11 +29,12 @@ const CreateProductPage = () => {
             try {
                 const [sizesRes, categoriesRes, ingredientsRes] = await Promise.all([
                     axiosInstance.get("/api/Products/sizes"),
-                    axiosInstance.get("/api/Categories/list"),
+                    axiosInstance.get("/api/Categories"),
                     axiosInstance.get("/api/Products/ingredients"),
                 ]);
 
-                setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
+                console.log("Categories", categoriesRes.data);
+               setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
                 setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
                 setIngredients(Array.isArray(ingredientsRes.data) ? ingredientsRes.data : []);
             } catch (error) {
@@ -56,39 +60,18 @@ const CreateProductPage = () => {
 
     const handleCreateProduct = async () => {
         try {
+            productData.imageFiles = images;
             console.log("Send Data server", productData);
-            /*
-            const formData = new FormData();
+            console.log("Send Data server", images);
 
-            formData.append("Name", productData.name);
-            formData.append("Slug", productData.slug);
-            formData.append("Weight", productData.weight.toString());
-            formData.append("Price", productData.price.toString());
-
-            if (productData.categoryId)
-                formData.append("CategoryId", productData.categoryId.toString());
-            if (productData.productSizeId)
-                formData.append("ProductSizeId", productData.productSizeId.toString());
-
-            productData.ingredientIds.forEach(id => {
-                formData.append("IngredientIds", id.toString());
-            });
-
-            images.forEach((img, index) => {
-                formData.append(`ProductImages[${index}].ImageFile`, img.file); // File або Blob
-                formData.append(`ProductImages[${index}].Priority`, index.toString()); // Пріорітет як рядок
-            });
-
-            const res = await axiosInstance.post("/api/Products/create", formData, {
+            const res = await axiosInstance.post("/api/Products/create", productData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
-
+            navigate("..");
             console.log("Продукт:", res.data);
 
-
-             */
         } catch (err) {
             setErrorMessage(err);
             console.error(err);
