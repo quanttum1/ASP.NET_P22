@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
 import {useNavigate} from "react-router-dom";
+import DragDropUpload from "../../../components/ProductCreatePage/DragDropUpload";
 
 const CreateProductPage = () => {
     const [productData, setProductData] = useState({
@@ -60,17 +61,20 @@ const CreateProductPage = () => {
 
     const handleCreateProduct = async () => {
         try {
-            productData.imageFiles = images;
-            console.log("Send Data server", productData);
-            console.log("Send Data server", images);
-
-            const res = await axiosInstance.post("/api/Products/create", productData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
-            navigate("..");
-            console.log("Продукт:", res.data);
+            console.log("Images", images);
+            productData.imageFiles = images.map(x=>x.originFileObj);
+            console.log("productData", productData);
+            //productData.imageFiles = images;
+            // console.log("Send Data server", productData);
+            // console.log("Send Data server", images);
+            //
+            // const res = await axiosInstance.post("/api/Products/create", productData, {
+            //     headers: {
+            //         "Content-Type": "multipart/form-data"
+            //     }
+            // });
+            // navigate("..");
+            // console.log("Продукт:", res.data);
 
         } catch (err) {
             setErrorMessage(err);
@@ -96,7 +100,10 @@ const CreateProductPage = () => {
 
                 <div className="col-md-6 mb-4">
                     <div className="border rounded p-3 h-100">
-                        <ImageUploaderSortable images={images} setImages={setImages} />
+                        {/*<ImageUploaderSortable images={images} setImages={setImages} />*/}
+                        <DragDropUpload fileList={images} setFileList={setImages} />
+
+
                     </div>
                 </div>
 

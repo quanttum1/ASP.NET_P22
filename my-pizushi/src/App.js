@@ -13,6 +13,7 @@ import {useEffect} from "react";
 import ProductsPage from "./pages/products";
 import ProductPage from "./pages/products/product";
 import CreateProductPage from "./pages/products/Create";
+import TestingPage from "./pages/Testing";
 
 const App = () => {
 
@@ -44,7 +45,10 @@ const App = () => {
                         <Route path={"create"} element={<CreateProductPage/>} />
                     </Route>
 
+
                     <Route path={"login"} element={<LoginPage/>}/>
+
+                    <Route path={"testing"} element={<TestingPage/>}/>
 
                     <Route path="500" element={<Error500 />} />
 
