@@ -14,6 +14,7 @@ import ProductsPage from "./pages/products";
 import ProductPage from "./pages/products/product";
 import CreateProductPage from "./pages/products/Create";
 import TestingPage from "./pages/Testing";
+import EditProductPage from "./pages/products/Edit";
 
 const App = () => {
 
@@ -43,6 +44,7 @@ const App = () => {
                         <Route index element={<ProductsPage/>} />
                         <Route path={"product/:id"} element={<ProductPage/>} />
                         <Route path={"create"} element={<CreateProductPage/>} />
+                        <Route path={"edit/:id"} element={<EditProductPage/>} />
                     </Route>
 
 
