@@ -63,7 +63,7 @@ const EditProductPage = () => {
                 ]);
 
                 console.log("Categories", categoriesRes.data);
-               setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
+                setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
                 setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
                 setIngredients(Array.isArray(ingredientsRes.data) ? ingredientsRes.data : []);
             } catch (error) {
@@ -87,12 +87,13 @@ const EditProductPage = () => {
         });
     };
 
-    const handleCreateProduct = async () => {
+    const handleEditProduct = async () => {
         try {
             //console.log("Images", images);
+            productData.id=id;
             productData.imageFiles = images.map(x=>x.originFileObj);
             console.log("productData", productData);
-            const res = await axiosInstance.post("/api/Products/create", productData, {
+            const res = await axiosInstance.put("/api/Products/edit", productData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -199,8 +200,8 @@ const EditProductPage = () => {
                                 ))}
                             </select>
                         </div>
-                        <button className="btn btn-success" onClick={handleCreateProduct}>
-                            Додати продукт
+                        <button className="btn btn-success" onClick={handleEditProduct}>
+                            Оновити продукт
                         </button>
                     </div>
                 </div>
