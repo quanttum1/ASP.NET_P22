@@ -16,4 +16,6 @@ public interface IProductService
     public Task<IEnumerable<ProductSizeModel>> GetSizesAsync();
 
     Task<ProductIngredientModel> UploadIngredient(CreateIngredientModel model);
+
+    Task Delete(long id);
 }

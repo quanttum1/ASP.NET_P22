@@ -36,6 +36,7 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
     public async Task<List<ProductItemModel>> List()
     {
         var model = await context.Products
+            .Where(x=>!x.IsDeleted)
             .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 
@@ -194,4 +195,28 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
 
         return mapper.Map<ProductIngredientModel>(entity);
     }
+
+    public async Task Delete(long id)
+    {
+        var product = await context.Products.Where(x => x.Id == id)
+            //.Include(x => x.ProductIngredients)
+            //.Include(x => x.ProductImages)
+            .FirstOrDefaultAsync();
+        product!.IsDeleted = true;
+        //if (product!.ProductIngredients != null)
+        //{
+        //    context.ProductIngredients.RemoveRange(product.ProductIngredients);
+        //}
+        //if (product.ProductImages != null)
+        //{
+        //    foreach (var image in product.ProductImages)
+        //    {
+        //        await imageService.DeleteImageAsync(image.Name);
+        //    }
+        //    context.ProductImages.RemoveRange(product!.ProductImages);
+        //}
+        //context.Products.Remove(product);
+        await context.SaveChangesAsync();
+    }
+
 }

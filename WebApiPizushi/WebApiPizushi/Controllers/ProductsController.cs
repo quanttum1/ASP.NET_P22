@@ -83,4 +83,11 @@ public class ProductsController(IProductService productService) : ControllerBase
             return Ok(ingredient);
         return BadRequest();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await productService.Delete(id);
+        return Ok();
+    }
 }
