@@ -1,4 +1,5 @@
 ﻿using Core.Models.Product;
+using Core.Models.Product.Ingredient;
 using Domain.Entities;
 
 namespace Core.Interfaces;
@@ -13,4 +14,6 @@ public interface IProductService
 
     public Task<IEnumerable<ProductIngredientModel>> GetIngredientsAsync();
     public Task<IEnumerable<ProductSizeModel>> GetSizesAsync();
+
+    Task<ProductIngredientModel> UploadIngredient(CreateIngredientModel model);
 }

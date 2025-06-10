@@ -6,6 +6,7 @@ using Domain;
 using Domain.Entities.Identity;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Core.Models.Product.Ingredient;
 
 namespace Core.Services;
 
@@ -81,6 +82,12 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
 
     public async Task<ProductItemModel> Edit(ProductEditModel model)
     {
+        var entity = await context.Products
+            .Where(x => x.Id == model.Id)
+            .SingleOrDefaultAsync();
+
+        mapper.Map(model, entity);
+
         var item = await context.Products
             .Where(x => x.Id == model.Id)
             .ProjectTo<ProductItemModel>(mapper.ConfigurationProvider)
@@ -139,6 +146,24 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
 
         }
 
+        var existingIngredients = context.ProductIngredients
+            .Where(pi => pi.ProductId == item.Id);
+
+        context.ProductIngredients.RemoveRange(existingIngredients);
+
+        if (model.IngredientIds != null)
+        {
+            foreach (var ingredientId in model.IngredientIds.Distinct())
+            {
+                var newIngredient = new ProductIngredientEntity
+                {
+                    ProductId = item.Id,
+                    IngredientId = ingredientId
+                };
+                context.ProductIngredients.Add(newIngredient);
+            }
+        }
+
 
         await context.SaveChangesAsync();
         return item;
@@ -158,5 +183,15 @@ public class ProductService(IMapper mapper, AppDbPizushiContext context,
             .ProjectTo<ProductSizeModel>(mapper.ConfigurationProvider)
             .ToListAsync();
         return sizes;
+    }
+
+    public async Task<ProductIngredientModel> UploadIngredient(CreateIngredientModel model)
+    {
+        var entity = mapper.Map<IngredientEntity>(model);
+        entity.Image = await imageService.SaveImageAsync(model.ImageFile!);
+        context.Ingredients.Add(entity);
+        await context.SaveChangesAsync();
+
+        return mapper.Map<ProductIngredientModel>(entity);
     }
 }
