@@ -1,13 +1,17 @@
 ﻿
 using System.Diagnostics.Eventing.Reader;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Core.Interfaces;
 using Core.Models.Cart;
 using Domain;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services;
 
-public class CartService(AppDbPizushiContext pizushiContext, IAuthService authService) : ICartService
+public class CartService(AppDbPizushiContext pizushiContext, 
+    IAuthService authService, IMapper mapper) : ICartService
 {
     public async Task CreateUpdate(CartCreateUpdateModel model)
     {
@@ -27,5 +31,17 @@ public class CartService(AppDbPizushiContext pizushiContext, IAuthService authSe
             pizushiContext.Carts.Add(entity);
         }
         await pizushiContext.SaveChangesAsync();
+    }
+
+    public async Task<List<CartItemModel>> GetCartItems()
+    {
+        var userId = await authService.GetUserId();
+
+        var items = await pizushiContext.Carts
+            .Where(x => x.UserId == userId)
+            .ProjectTo<CartItemModel>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return items;
     }
 }

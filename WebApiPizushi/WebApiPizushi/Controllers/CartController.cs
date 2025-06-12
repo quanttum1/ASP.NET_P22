@@ -15,9 +15,15 @@ namespace WebApiPizushi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUpdate([FromBody] CartCreateUpdateModel model)
         {
-
             await cartService.CreateUpdate(model);
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetItems()
+        {
+            var model =  await cartService.GetCartItems();
+            return Ok(model);
         }
     }
 }
