@@ -17,6 +17,7 @@ public class AppDbPizushiContext : IdentityDbContext<UserEntity, RoleEntity, lon
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<ProductIngredientEntity> ProductIngredients { get; set; }
     public DbSet<ProductImageEntity> ProductImages { get; set; }
+    public DbSet<CartEntity> Carts { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -37,5 +38,8 @@ public class AppDbPizushiContext : IdentityDbContext<UserEntity, RoleEntity, lon
 
         builder.Entity<ProductIngredientEntity>()
             .HasKey(pi => new { pi.ProductId, pi.IngredientId });
+        
+        builder.Entity<CartEntity>()
+            .HasKey(pi => new { pi.ProductId, pi.UserId });
     }
 }
