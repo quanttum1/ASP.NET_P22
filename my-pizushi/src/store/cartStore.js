@@ -59,7 +59,7 @@ export const useCartStore = create(persist(
             const { isAuthenticated } = useAuthStore.getState();
             console.log("productId",productId);
             if(isAuthenticated) {
-                await axiosInstance.delete(`/api/carts/delete/${productId}`);
+                await axiosInstance.delete(`/api/cart/delete/${productId}`);
             }
             else{
                 const updatedItems = get().items.filter(i => i.productId !== productId);
@@ -70,7 +70,7 @@ export const useCartStore = create(persist(
         },
 
         addToCart: async (productId, quantity) => {
-            await axiosInstance.post('/api/carts/createUpdate', {
+            await axiosInstance.post('/api/cart/createUpdate', {
                 productId: productId,
                 quantity: quantity
             });
