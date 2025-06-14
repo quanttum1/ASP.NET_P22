@@ -20,7 +20,7 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { setUser, user } = useAuthStore((state) => state);
-    console.log("User authenticated", user);
+    // console.log("User authenticated", user);
 
     const initValues = {
         email: "",
@@ -37,6 +37,8 @@ const LoginPage = () => {
             const token = result.data.token;
 
             localStorage.setItem("jwt", token);
+
+            // axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             const decoded = jwtDecode(token);
             setUser(decoded);

@@ -1,11 +1,20 @@
 import {NavLink, useNavigate} from "react-router-dom";
 import {useAuthStore} from "../../store/authStore";
 import {BASE_URL} from "../../api/apiConfig";
+import {useCartStore} from "../../store/cartStore";
+import {useEffect} from "react";
 
 const Header = () => {
     const navigate = useNavigate();
 
+    // const loadCart = useCartStore((state) => state.loadCart);
+    const items = useCartStore((state) => state.items);
+
     const { user, logout } = useAuthStore((state) => state);
+
+    // useEffect( () => {
+    //     loadCart();
+    // }, []);
 
     const handleLogout = () => {
         logout();
