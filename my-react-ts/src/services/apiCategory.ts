@@ -6,9 +6,11 @@ import {serialize} from "object-to-formdata";
 export const apiCategory = createApi({
     reducerPath: 'api',
     baseQuery: createBaseQuery('categories'),
+    tagTypes: ['Category'],
     endpoints: (builder) => ({
         getAllCategories: builder.query<ICategoryItem[], void>({
-            query: () => ''
+            query: () => '',
+            providesTags: ['Category'],
         }),
         createCategory: builder.mutation<ICategoryItem, ICategoryCreate>({
             query: (newCategory) => {
@@ -23,7 +25,8 @@ export const apiCategory = createApi({
                 catch {
                     throw new Error('Error create category');
                 }
-            }
+            },
+            invalidatesTags: ['Category'],
         })
     }),
 });

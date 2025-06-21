@@ -10,3 +10,23 @@ export interface ICategoryCreate {
     slug: string;
     imageFile: string;
 }
+
+export interface ICategoryEdit
+{
+    id: number;
+    name: string;
+    slug: string;
+    imageFile: string;
+}
+
+export interface ICategoryDelete
+{
+    id: number;
+}
+
+export interface ServerError {
+    status: number;
+    data: {
+        errors: Record<string, string[]>;
+    };
+}

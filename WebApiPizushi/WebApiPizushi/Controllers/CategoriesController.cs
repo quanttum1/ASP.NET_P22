@@ -24,7 +24,7 @@ public class CategoriesController(ICategoryService categoryService) : Controller
         return Ok(model);
     }
 
-    [Authorize(Roles = $"{Roles.Admin}")]
+    //[Authorize(Roles = $"{Roles.Admin}")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItemById(int id)
     {
