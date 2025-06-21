@@ -20,24 +20,32 @@ public class CategoryService(AppDbPizushiContext pizushiContext,
         return item;
     }
 
+    public async Task Delete(long id)
+    {
+        var entity = await pizushiContext.Categories.Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
+        entity!.IsDeleted = true;
+        await pizushiContext.SaveChangesAsync();
+    }
+
     public async Task<CategoryItemModel?> GetItemById(int id)
     {
         var model = await mapper
-            .ProjectTo<CategoryItemModel>(pizushiContext.Categories.Where(x => x.Id == id))
+            .ProjectTo<CategoryItemModel>(pizushiContext.Categories.Where(x => !x.IsDeleted).Where(x => x.Id == id))
             .SingleOrDefaultAsync();
         return model;
     }
 
     public async Task<List<CategoryItemModel>> List()
     {
-        var model = await mapper.ProjectTo<CategoryItemModel>(pizushiContext.Categories)
+        var model = await mapper.ProjectTo<CategoryItemModel>(pizushiContext.Categories.Where(x => !x.IsDeleted))
             .ToListAsync();
         return model;
     }
 
     public async Task<CategoryItemModel> Update(CategoryEditModel model)
     {
-        var existing = await pizushiContext.Categories.FirstOrDefaultAsync(x => x.Id == model.Id);
+        var existing = await pizushiContext.Categories.Where(x => !x.IsDeleted).FirstOrDefaultAsync(x => x.Id == model.Id);
 
         existing = mapper.Map(model, existing);
 

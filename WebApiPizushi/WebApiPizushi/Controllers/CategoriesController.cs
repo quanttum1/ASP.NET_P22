@@ -10,6 +10,7 @@ using Domain;
 using Domain.Entities;
 using Core.Interfaces;
 using Core.Models.Category;
+using Core.Services;
 
 namespace WebApiPizushi.Controllers;
 
@@ -49,5 +50,12 @@ public class CategoriesController(ICategoryService categoryService) : Controller
         var category = await categoryService.Update(model);
 
         return Ok(category);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await categoryService.Delete(id);
+        return Ok();
     }
 }
