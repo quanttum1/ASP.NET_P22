@@ -1,6 +1,6 @@
 import {Dropdown} from "../ui/dropdown/Dropdown.tsx";
 import {DropdownItem} from "../ui/dropdown/DropdownItem.tsx";
-import {useNavigate} from "react-router-dom";
+// import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {logout} from "../../store/authSlice.ts";
@@ -8,7 +8,7 @@ import {APP_ENV} from "../../env";
 
 export default function UserDropdown() {
     const { user } = useAppSelector(state=>state.auth);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
 

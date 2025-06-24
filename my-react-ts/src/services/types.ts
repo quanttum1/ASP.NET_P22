@@ -30,3 +30,12 @@ export interface ServerError {
         errors: Record<string, string[]>;
     };
 }
+
+export interface IRegister
+{
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    imageFile: string;
+}
