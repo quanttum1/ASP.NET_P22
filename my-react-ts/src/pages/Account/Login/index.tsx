@@ -1,22 +1,29 @@
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { Form, type FormProps, Input } from 'antd';
 import {type ILoginRequest, useLoginMutation} from "../../../services/apiAccount.tsx";
-import {loginSuccess} from "../../../store/authSlice.ts";
+import {getUserFromToken, loginSuccess} from "../../../store/authSlice.ts";
+import {useAppDispatch} from "../../../store";
 
 
 const LoginPage: React.FC = () => {
     const [login, { isLoading }] = useLoginMutation();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const onFinish: FormProps<ILoginRequest>["onFinish"] = async (values) => {
         try {
-            // console.log("Begin login", values);
             const response = await login(values).unwrap();
-            // console.log(response);
-            dispatch(loginSuccess(response.token));
-            navigate('/admin/home');
+            const { token } = response;
+            dispatch(loginSuccess(token));
+
+            const user = getUserFromToken(token);
+            console.log("user", user);
+            if (!user || !user.roles.includes("Admin")) {
+                navigate('/');
+            }
+            else {
+                navigate('/admin/home');
+            }
         } catch (err) {
             console.log("error", err);
             alert("Login failed");
