@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/postcss": "^4.1.10",
     "antd": "^5.26.1",
+    "antd-img-crop": "^4.25.0",
     "apexcharts": "^4.7.0",
     "flatpickr": "^4.6.13",
     "jwt-decode": "^4.0.0",

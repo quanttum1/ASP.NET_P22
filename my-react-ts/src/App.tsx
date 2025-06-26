@@ -12,6 +12,8 @@ import LoginPage from "./pages/Account/Login";
 import RequireAdmin from "./components/ProtectedRoute/RequireAdmin.tsx";
 import RegistrationPage from "./pages/Account/register";
 import ProductsPage from "./pages/Products/List";
+import AdminProductListPage from "./admin/pages/Products/List/AdminProductListPage.tsx";
+import AdminProductCreatePage from "./admin/pages/Products/Create/AdminProductCreatePage.tsx";
 
 const App: React.FC = () => {
 
@@ -38,6 +40,12 @@ const App: React.FC = () => {
                                 <Route path={'create'} element={<CategoriesCreatePage/>}/>
                                 <Route path={'edit/:id'} element={<CategoriesEditPage/>}/>
                             </Route>
+
+                            <Route path="products">
+                                <Route index element={<AdminProductListPage/>}/>
+                                <Route path={'create'} element={<AdminProductCreatePage/>}/>
+                            </Route>
+
                         </Route>
                     </Route>
 

@@ -1,17 +1,11 @@
 import {Row} from 'antd';
 import {useGetAllProductsQuery} from "../../../services/apiProducts.ts";
-// import LoadingScreen from "../../../components/ui/loading/LoadingScreen.tsx";
 import ProductCard from "../../../components/ui/card/ProductCard.tsx";
 import LoadingOverlay from "../../../components/ui/loading/LoadingOverlay.tsx";
 
 export const ProductsPage: React.FC = () => {
     const {data: products, isLoading, isError} = useGetAllProductsQuery();
 
-    // if (isLoading) {
-    //     return (
-    //         <LoadingScreen/>
-    //     )
-    // }
     if (isError) return <p>Помилка при завантаженні продуктів</p>;
 
     const uniqueProducts = products
