@@ -1,6 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import {apiCategory} from "../services/apiCategory.ts";
-import {apiAccount} from "../services/apiAccount.tsx";
+import {apiAccount} from "../services/apiAccount.ts";
+import {apiProducts} from "../services/apiProducts.ts";
 import authReducer from './authSlice.ts';
 import {type TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 
@@ -9,10 +10,15 @@ export const store = configureStore({
     reducer: {
         [apiCategory.reducerPath]: apiCategory.reducer,
         [apiAccount.reducerPath]: apiAccount.reducer,
+        [apiProducts.reducerPath]: apiProducts.reducer,
         auth: authReducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(apiCategory.middleware, apiAccount.middleware),
+        getDefaultMiddleware().concat(
+            apiCategory.middleware,
+            apiAccount.middleware,
+            apiProducts.middleware,
+            ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

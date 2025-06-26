@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Form, type FormProps, Input } from 'antd';
-import {type ILoginRequest, useLoginMutation} from "../../../services/apiAccount.tsx";
+import {type ILoginRequest, useLoginMutation} from "../../../services/apiAccount.ts";
 import {getUserFromToken, loginSuccess} from "../../../store/authSlice.ts";
 import {useAppDispatch} from "../../../store";
 
