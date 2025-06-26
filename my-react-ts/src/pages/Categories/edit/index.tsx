@@ -5,7 +5,7 @@ import { useEditCategoryMutation, useGetCategoryByIdQuery } from "../../../servi
 import { useNavigate, useParams } from "react-router";
 import LoadingOverlay from "../../../components/ui/loading/LoadingOverlay.tsx";
 import { useFormServerErrors } from "../../../utilities/useFormServerErrors.ts";
-// import { useEffect } from "react";
+import {APP_ENV} from "../../../env";
 
 const CategoriesEditPage: React.FC = () => {
     const navigate = useNavigate();
@@ -19,6 +19,7 @@ const CategoriesEditPage: React.FC = () => {
 
     const [form] = Form.useForm<ICategoryEdit>();
     const setServerErrors = useFormServerErrors(form);
+
 
     const onFinish: FormProps<ICategoryEdit>['onFinish'] = async (values) => {
         try {
@@ -38,6 +39,8 @@ const CategoriesEditPage: React.FC = () => {
 
     if (isLoadingCategory) return <p>Завантаження категорії...</p>;
     if (isErrorCategory || !category) return <p>Категорія не знайдена.</p>;
+
+
 
     return (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -73,7 +76,10 @@ const CategoriesEditPage: React.FC = () => {
                         <Input />
                     </Form.Item>
 
-                    <ImageUploadFormItem name="imageFile" label="Нове фото" />
+                    <ImageUploadFormItem name="imageFile"
+                                         label="Нове фото"
+                                         src={`${APP_ENV.IMAGES_400_URL}${category.image}`}
+                    />
 
                     <Form.Item label={null}>
                         <Button type="primary" htmlType="submit">
