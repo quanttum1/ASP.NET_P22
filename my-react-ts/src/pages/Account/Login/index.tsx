@@ -4,6 +4,9 @@ import {type ILoginRequest, useLoginMutation} from "../../../services/apiAccount
 import {getUserFromToken, loginSuccess} from "../../../store/authSlice.ts";
 import {useAppDispatch} from "../../../store";
 
+import { useGoogleLogin } from '@react-oauth/google';
+
+
 
 const LoginPage: React.FC = () => {
     const [login, { isLoading }] = useLoginMutation();
@@ -29,6 +32,10 @@ const LoginPage: React.FC = () => {
             alert("Login failed");
         }
     };
+
+    const loginUseGoogle = useGoogleLogin({
+        onSuccess: tokenResponse => console.log(tokenResponse),
+    });
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -59,6 +66,16 @@ const LoginPage: React.FC = () => {
                         className="bg-orange-500 hover:bg-orange-600 transition text-white font-semibold px-4 py-2 rounded w-full mt-4"
                     >
                         {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+
+                    <button
+                        onClick={(event) =>  {
+                            event.preventDefault();
+                            loginUseGoogle();
+                        }}
+                        className="bg-blue-500 hover:bg-blue-600 transition text-white font-semibold px-4 py-2 rounded w-full mt-4"
+                    >
+                        {'LoginGoogle'}
                     </button>
                 </Form>
             </div>
