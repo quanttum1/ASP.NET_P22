@@ -44,7 +44,7 @@ const AdminProductListPage: React.FC = () => {
 
                         <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
                             {
-                                products.map((product) => {
+                                products?.map((product) => {
                                         const image = product.productImages?.[0]?.name;
                                         return (
                                             <TableRow key={product.id}>
