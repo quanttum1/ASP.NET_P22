@@ -23,6 +23,13 @@ export const apiAccount = createApi({
                 body: credentials,
             }),
         }),
+        loginByGoogle:builder.mutation<{token: string}, string>({
+            query: (token) => ({
+                url: 'googleLogin',
+                method: 'POST',
+                body: {token}
+            })
+        }),
         register: builder.mutation<ILoginResponse, IRegister>({
             query: (credentials) => {
                 const formData = serialize(credentials);
@@ -36,4 +43,7 @@ export const apiAccount = createApi({
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = apiAccount;
+export const {
+    useLoginMutation,
+    useLoginByGoogleMutation,
+    useRegisterMutation } = apiAccount;

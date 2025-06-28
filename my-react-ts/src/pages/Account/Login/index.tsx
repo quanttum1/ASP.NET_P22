@@ -1,17 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import { Form, type FormProps, Input } from 'antd';
-import {type ILoginRequest, useLoginMutation} from "../../../services/apiAccount.ts";
+import {type ILoginRequest, useLoginByGoogleMutation, useLoginMutation} from "../../../services/apiAccount.ts";
 import {getUserFromToken, loginSuccess} from "../../../store/authSlice.ts";
 import {useAppDispatch} from "../../../store";
 
 import { useGoogleLogin } from '@react-oauth/google';
+import LoadingOverlay from "../../../components/ui/loading/LoadingOverlay.tsx";
+// import type {ServerError} from "../../../services/types.ts";
 
 
 
 const LoginPage: React.FC = () => {
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+    const [loginByGoogle, { isLoading: isGoogleLoading }] = useLoginByGoogleMutation();
+
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    // const [form] = Form.useForm<ILogin>();
+    // const setServerErrors = useFormServerErrors(form);
 
     const onFinish: FormProps<ILoginRequest>["onFinish"] = async (values) => {
         try {
@@ -34,12 +41,31 @@ const LoginPage: React.FC = () => {
     };
 
     const loginUseGoogle = useGoogleLogin({
-        onSuccess: tokenResponse => console.log(tokenResponse),
+        onSuccess: async (tokenResponse) =>
+        {
+            try {
+                const result = await loginByGoogle(tokenResponse.access_token).unwrap();
+                dispatch(loginSuccess(result.token));
+                navigate('/');
+            } catch (error) {
+
+                console.log("User server error auth", error);
+                // const serverError = error as ServerError;
+                //
+                // if (serverError?.status === 400 && serverError?.data?.errors) {
+                //     // setServerErrors(serverError.data.errors);
+                // } else {
+                //     message.error("Сталася помилка при вході");
+                // }
+            }
+        },
     });
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+                {(isLoginLoading || isGoogleLoading)  && <LoadingOverlay />}
+
                 <h2 className="text-2xl font-semibold mb-6 text-center">Admin Login</h2>
                 <Form<ILoginRequest>
                     layout="vertical"
@@ -65,7 +91,7 @@ const LoginPage: React.FC = () => {
                         type="submit"
                         className="bg-orange-500 hover:bg-orange-600 transition text-white font-semibold px-4 py-2 rounded w-full mt-4"
                     >
-                        {isLoading ? 'Logging in...' : 'Login'}
+                        {isLoginLoading ? 'Logging in...' : 'Login'}
                     </button>
 
                     <button
