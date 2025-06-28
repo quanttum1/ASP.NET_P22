@@ -12,6 +12,11 @@ interface ILoginResponse {
     token: string;
 }
 
+interface IForgotPasswordRequest {
+    email: string;
+}
+
+
 export const apiAccount = createApi({
     reducerPath: 'api/account',
     baseQuery: createBaseQuery('account'),
@@ -23,13 +28,39 @@ export const apiAccount = createApi({
                 body: credentials,
             }),
         }),
-        loginByGoogle:builder.mutation<{token: string}, string>({
+        loginByGoogle: builder.mutation<{token: string}, string>({
             query: (token) => ({
                 url: 'googleLogin',
                 method: 'POST',
                 body: {token}
             })
         }),
+        //запускаємо процедуру відновлення паролю по пошті
+        forgotPassword: builder.mutation<IForgotPasswordRequest, void>({
+            query: (data) => ({
+                url: 'forgotPassword',
+                method: 'POST',
+                body: data
+            })
+        }),
+        //перевіряємо чи токен дійсний
+        validateResetToken: builder.mutation<{token: string}, boolean>({
+            query: (token) => ({
+                url: 'validateResetToken',
+                method: 'POST',
+                body: {token}
+            })
+        }),
+
+        //встановлюємо новий пароль
+        resetPassword: builder.mutation<{password: string}, void>({
+            query: (password) => ({
+                url: 'resetPassword',
+                method: 'POST',
+                body: {password}
+            })
+        }),
+
         register: builder.mutation<ILoginResponse, IRegister>({
             query: (credentials) => {
                 const formData = serialize(credentials);
@@ -46,4 +77,7 @@ export const apiAccount = createApi({
 export const {
     useLoginMutation,
     useLoginByGoogleMutation,
+    useForgotPasswordMutation,
+    useValidateResetTokenMutation,
+    useResetPasswordMutation,
     useRegisterMutation } = apiAccount;

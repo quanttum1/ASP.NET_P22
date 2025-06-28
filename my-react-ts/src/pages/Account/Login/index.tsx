@@ -6,6 +6,7 @@ import {useAppDispatch} from "../../../store";
 
 import { useGoogleLogin } from '@react-oauth/google';
 import LoadingOverlay from "../../../components/ui/loading/LoadingOverlay.tsx";
+import {Link} from "react-router";
 // import type {ServerError} from "../../../services/types.ts";
 
 
@@ -74,18 +75,24 @@ const LoginPage: React.FC = () => {
                     <Form.Item<ILoginRequest>
                         name="email"
                         label="Email"
-                        rules={[{ required: true, message: "Enter your email" }]}
+                        rules={[{required: true, message: "Enter your email"}]}
                     >
-                        <Input type="email" placeholder="you@example.com" />
+                        <Input type="email" placeholder="you@example.com"/>
                     </Form.Item>
 
                     <Form.Item<ILoginRequest>
                         name="password"
                         label="Password"
-                        rules={[{ required: true, message: "Enter your password" }]}
+                        rules={[{required: true, message: "Enter your password"}]}
                     >
-                        <Input.Password placeholder="••••••••" />
+                        <Input.Password placeholder="••••••••"/>
                     </Form.Item>
+
+                    <div className="flex justify-end">
+                        <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                            Забули пароль?
+                        </Link>
+                    </div>
 
                     <button
                         type="submit"
@@ -95,7 +102,7 @@ const LoginPage: React.FC = () => {
                     </button>
 
                     <button
-                        onClick={(event) =>  {
+                        onClick={(event) => {
                             event.preventDefault();
                             loginUseGoogle();
                         }}
