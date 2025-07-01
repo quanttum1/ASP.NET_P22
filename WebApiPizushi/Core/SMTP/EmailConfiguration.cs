@@ -21,6 +21,6 @@ public static class EmailConfiguration
     /// <summary>
     /// Пароль, який видав сервер
     /// </summary>
-    public const string Password = "sq5nufzMZ7x8YmX0";
+    public const string Password = "0gFY4Q9P9s5H9iLd";
 
 }
