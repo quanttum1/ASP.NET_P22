@@ -1,18 +1,27 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Bogus;
+using Core.Constants;
 using Core.Interfaces;
 using Core.Models.AdminUser;
 using Core.Models.Search;
 using Core.Models.Search.Params;
+using Core.Models.Seeder;
 using Domain;
 using Domain.Entities.Identity;
+using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Text.Json;
+using static Bogus.DataSets.Name;
 
 namespace Core.Services;
 
 public class UserService(UserManager<UserEntity> userManager,
     IMapper mapper,
+    IImageService imageService,
+    RoleManager<RoleEntity> roleManager,
     AppDbPizushiContext context) : IUserService
 {
     public async Task<List<AdminUserItemModel>> GetAllUsersAsync()
@@ -112,6 +121,66 @@ public class UserService(UserManager<UserEntity> userManager,
                 CurrentPage = safePage
             }
         };
+    }
+
+    public async Task<string> SeedAsync(SeedItemsModel model)
+    {
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+        var fakeUsers = new Faker<SeederUserModel>("uk")
+            .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
+           //Pick some fruit from a basket
+           .RuleFor(u => u.FirstName, (f, u) => f.Name.FirstName(u.Gender))
+           .RuleFor(u => u.LastName, (f, u) => f.Name.LastName(u.Gender))
+           .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
+           .RuleFor(u => u.Password, (f, u) => f.Internet.Password(8))
+           .RuleFor(u => u.Roles, f => new List<string>() { f.PickRandom(Constants.Roles.AllRoles) })
+           .RuleFor(u => u.Image, f => "https://thispersondoesnotexist.com");
+            
+        var genUsers = fakeUsers.Generate(model.Count);
+
+        try
+        {
+            foreach (var user in genUsers)
+            {
+                var entity = mapper.Map<UserEntity>(user);
+                entity.UserName = user.Email;
+                entity.Image = await imageService.SaveImageFromUrlAsync(user.Image);
+                var result = await userManager.CreateAsync(entity, user.Password);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("Error Create User {0}", user.Email);
+                    continue;
+                }
+                foreach (var role in user.Roles)
+                {
+                    if (await roleManager.RoleExistsAsync(role))
+                    {
+                        await userManager.AddToRoleAsync(entity, role);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Not Found Role {0}", role);
+                    }
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error Json Parse Data {0}", ex.Message);
+        }
+
+        stopWatch.Stop();
+        // Get the elapsed time as a TimeSpan value.
+        TimeSpan ts = stopWatch.Elapsed;
+
+        // Format and display the TimeSpan value.
+        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+
+        return elapsedTime;
     }
 
     private async Task LoadLoginsAndRolesAsync(List<AdminUserItemModel> users)

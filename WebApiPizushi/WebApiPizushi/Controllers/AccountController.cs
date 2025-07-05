@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WebApiPizushi.Constants;
+using Core.Constants;
 using Domain.Entities.Identity;
 using Core.Interfaces;
 using Core.Models.Account;

@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Models.Search.Params;
+using Core.Models.Seeder;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiPizushi.Controllers;
@@ -15,10 +16,18 @@ public class UsersController(IUserService userService) : Controller
 
         return Ok(model);
     }
+
     [HttpGet("search")]
     public async Task<IActionResult> SearchUsers([FromQuery] UserSearchModel model)
     {
         var result = await userService.SearchUsersAsync(model);
+        return Ok(result);
+    }
+
+    [HttpGet("seed")]
+    public async Task<IActionResult> SeedUsers([FromQuery] SeedItemsModel model)
+    {
+        var result = await userService.SeedAsync(model);
         return Ok(result);
     }
 }
