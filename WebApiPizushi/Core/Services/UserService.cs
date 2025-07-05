@@ -79,23 +79,35 @@ public class UserService(UserManager<UserEntity> userManager,
             query = query.Where(u => u.DateCreated <= model.EndDate);
         }
 
+        //if (model.Roles != null && model.Roles.Any())
+        //{
+        //    var validRoles = model.Roles.Where(role => role != null);
+
+        //    if (validRoles != null && validRoles.Count() > 0)
+        //    {
+        //        var usersInRole = (await Task.WhenAll(
+        //            model.Roles.Select(role => userManager.GetUsersInRoleAsync(role))
+        //        )).SelectMany(u => u).ToList();
+
+        //        var userIds = usersInRole.Select(u => u.Id).ToHashSet();
+
+        //        query = query.Where(u => userIds.Contains(u.Id));
+        //    }
+        //}
+
         if (model.Roles != null && model.Roles.Any())
         {
-            var validRoles = model.Roles.Where(role => role != null);
-
-            if (validRoles != null && validRoles.Count() > 0)
-            {
-                var usersInRole = (await Task.WhenAll(
-                    model.Roles.Select(role => userManager.GetUsersInRoleAsync(role))
-                )).SelectMany(u => u).ToList();
-
-                var userIds = usersInRole.Select(u => u.Id).ToHashSet();
-
-                query = query.Where(u => userIds.Contains(u.Id));
-            }
+            query = query.Where(user => model.Roles.Any(role => user.UserRoles.Select(x=>x.Role.Name).Contains(role)));
         }
 
-        var totalCount = await query.CountAsync();
+            //if (searchParams?.Roles.Count > 0)
+            //{
+            //    users = users.Where(user => searchParams.Roles.Any(role => user.Roles.Contains(role))
+            //    ).ToList();
+            //}
+
+
+            var totalCount = await query.CountAsync();
 
         var safeItemsPerPage = model.ItemPerPAge < 1 ? 10 : model.ItemPerPAge;
         var totalPages = (int)Math.Ceiling(totalCount / (double)safeItemsPerPage);
@@ -108,7 +120,7 @@ public class UserService(UserManager<UserEntity> userManager,
             .ProjectTo<AdminUserItemModel>(mapper.ConfigurationProvider)
             .ToListAsync();
 
-        await LoadLoginsAndRolesAsync(users);
+       //await LoadLoginsAndRolesAsync(users);
 
         return new SearchResult<AdminUserItemModel>
         {
