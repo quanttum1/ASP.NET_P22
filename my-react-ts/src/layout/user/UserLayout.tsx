@@ -1,6 +1,6 @@
 import {Link, Outlet} from "react-router";
 import {useAppDispatch, useAppSelector} from "../../store";
-import {useNavigate} from "react-router-dom";
+// import {useNavigate} from "react-router-dom";
 import {logout} from "../../store/authSlice.ts";
 import {Button} from "antd";
 import {APP_ENV} from "../../env";
@@ -8,13 +8,13 @@ import {APP_ENV} from "../../env";
 const UserLayout: React.FC = () => {
     const { user } = useAppSelector(state=>state.auth);
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    function logoutUser() {
-        // console.log("logoutUser");
-        dispatch(logout());
-        navigate('/');
-
-    }
+    // const navigate = useNavigate();
+    // function logoutUser() {
+    //     // console.log("logoutUser");
+    //     dispatch(logout());
+    //     navigate('/');
+    //
+    // }
 
 
 
